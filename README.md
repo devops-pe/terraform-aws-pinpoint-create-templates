@@ -14,8 +14,12 @@
   - htmlmin
 - nodejs 18 or higher
 - npm 9 or higher(global install)
+
   - html-minifier
   - html-validate
+
+- jo command line tool(create json file dynamic)
+- yq command line tool(for extract information yaml file)
 
 ## Example Usage
 
@@ -42,19 +46,22 @@ module "pinpoint_tpl" {
 | map_replace        | Map of key value to replace in html files |
 | rules_off          | List of rules off html-validate           |
 
-
-
 ## The html files be validate with [html-validate](https://html-validate.org/usage/)
+
 ```javascript
 npm install -g html-validate
-//ejemplo de uso 
+//ejemplo de uso
 html-validate index.html
 ```
+
 ## _can exclude validate rules_
+
 ```javascript
 html-validate index.html --config .htmlvalidate.json
 ```
+
 ## _the file .htmlvalidate.json containt_
+
 ```javascript
 {
   "extends": ["html-validate:recommended"],
@@ -65,14 +72,18 @@ html-validate index.html --config .htmlvalidate.json
   }
 }
 ```
+
 ## _Las reglas de exclusion son se pueden generar dynamicamente_
+
 ```javascript
 html-validate index.html --config .htmlvalidate.json \
 --set rules.no-inline-style=off \
 --set rules.no-deprecated-attr=off \
 --set rules.element-permitted-content=off
 ```
+
 ## in terraform use the following to generate the file .htmlvalidate.json we can create it dynamically
+
 ```javascript
 locals {
   rules_off = [
@@ -82,21 +93,23 @@ locals {
   ]
 }
 ```
+
 ## log for error html-validate
+
 ```javascript
 |   Error: local-exec provisioner error
-│ 
+│
 │   with module.pinpoint-tpl.null_resource.html_validate_templates["department/email/change_dir/index.html"],
 │   on .terraform/modules/pinpoint-tpl/validate.html.tf line 20, in resource "null_resource" "html_validate_templates":
 │   20:   provisioner "local-exec" {
-│ 
+│
 │ Error running command 'HTML_VALIDATE=$(jo -p \
 │       extends="$(jo -a html-validate:recommended)" \
 │       rules="$(jo -p no-inline-style=off no-deprecated-attr=off element-permitted-content=off)"
 │ )
 │ echo $HTML_VALIDATE > .htmlvalidate.json
 │ html-validate --config .htmlvalidate.json $INDEX_HTML
-│ ': exit status 1. Output: 
+│ ': exit status 1. Output:
 │ /app/files_templates/department/email/change_dir/index.html
 │     4:27  error  Expected omitted end tag <meta> instead of self-closing element <meta/>         void-style
 │     5:58  error  Expected omitted end tag <meta> instead of self-closing element <meta/>         void-style
@@ -109,9 +122,9 @@ locals {
 │   341:21  error  Expected omitted end tag <img> instead of self-closing element <img/>           void-style
 │   357:21  error  Expected omitted end tag <img> instead of self-closing element <img/>           void-style
 │   373:21  error  Expected omitted end tag <img> instead of self-closing element <img/>           void-style
-│ 
+│
 │ ✖ 11 problems (11 errors, 0 warnings)
-│ 
+│
 │ More information:
 │   https://html-validate.org/rules/void-style.html
 │   https://html-validate.org/rules/wcag/h63.html
@@ -120,18 +133,21 @@ locals {
 - for _email_ se need two files in each folder:
   - index.html
   - main.yml
+
 ### _Example_
-  ```javascript
-  ├── email
-  |   ├── email_attachment
-  │       ├── index.html
-  │       └── main.yml
-  ```
+
+```javascript
+├── email
+|   ├── email_attachment
+│       ├── index.html
+│       └── main.yml
+```
+
 - in the _main.yml_ should be the following:
-    ```yaml
-    name: "email_attachment_card_account_close_notification"
-    version: 1
-    ```
+  ```yaml
+  subject: "HOLA {{name}}"
+  name: "email_change"
+  ```
 - Para _inbox_ needs this file in each yaml file:
   ### _Example_
   ```javascript
@@ -147,7 +163,7 @@ locals {
     content: "hi {{name}}!"
     ```
 - for _push_ needs this file in each yaml file:
-    ### _Example_
+  ### _Example_
   ```javascript
   ├── push
   |   ├── push_attachment
@@ -156,12 +172,12 @@ locals {
   - main.push.yml
   - example:
     ```yaml
-    name: 'hola'
+    name: "hola"
     version: 1
     content: "¡hola {{name}}!"
     ```
 - for _sms_ needs this file in each yaml file:
-    ### _Example_
+  ### _Example_
   ```javascript
   ├── sms
   |   ├── sms_attachment
