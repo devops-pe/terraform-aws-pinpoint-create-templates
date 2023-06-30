@@ -133,6 +133,20 @@ locals {
 - for _email_ se need two files in each folder:
   - index.html
   - main.yml
+### tags that are replaced in html files are for example: {{ENVIRONMENT_DOMAIN}}
+- before:
+```html
+<a href="https://{{ENVIRONMENT_DOMAIN}}/login">Login</a>
+```
+- after:
+```html
+<a href="https://static.example.com/login">Login</a>
+```
+
+which comes from the map:
+map_replace={
+    ENVIRONMENT_DOMAIN="static.example.com"
+}
 
 ### _Example_
 
